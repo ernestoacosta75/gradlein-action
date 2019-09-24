@@ -8,7 +8,7 @@
     </welcome-file-list>
     <servlet>
         <servlet-name>todo</servlet-name>
-        <servlet-class>com.manning.gia.todo.web.ToDoServlet</servlet-class>
+        <servlet-class>com.eara.gia.todo.web.ToDoServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
