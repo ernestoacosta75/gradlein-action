@@ -110,18 +110,13 @@ ProjectVersion readVersion() {
 }
 
 
-task makeReleaseVersion(group: 'versioning', description: 'Makes project a release version.') {
-    // Declarinf versionrelease property as input
-    inputs.property('release', version.release)
-
-    //As the version file is going to be modified it's declared as output file property
-    outputs.file versionFile
-    doLast {
-        version.release = true
-        ant.propertyfile(file: versionFile) {
-            entry( key: "release", value: "true")
-        }
-    }
+/**
+ * Defining and enhanced task of type ReleaseVersionTask
+ */
+task makeReleaseVersion(type: ReleaseVersionTask) {
+    // Setting custom task properties
+    release = version.release
+    destFile = versionFile
 }
 
 // Class definitions
@@ -146,5 +141,42 @@ class ProjectVersion {
     String toString() {
         "$major.$minor${release ? '' : '-SNAPSHOT'}" //-SNAPSHOT suffix is only added if release property is false
     }
+}
+
+/**
+ * This class extends Gradle's default task implementation
+ * and express the logic from "makeReleaseVersion" task as
+ * a custom task class.
+ *
+ * The <b>@Input</b> annotation is used to declare the input
+ * property "release" and the <b>@OutputFile</b> annotation to
+ * define the output file.
+ * These annotations act as automatic documentation as well.
+ *
+ * The <b>@TaskAction</b> annotation declares the method to be
+ * executed.
+ *
+ * @author Ernesto A. Rodriguez Acosta
+ */
+class ReleaseVersionTask extends DefaultTask {
+
+    // Declaring custom task's inputs/outputs through annotations
+    @Input Boolean release
+    @OutputFile File destFile
+
+    ReleaseVersionTask() {
+        // Setting task's group and description properties in the constructor
+        group = 'versioning'
+        description = 'Makes project a release version.'
+    }
+
+    @TaskAction
+    void start() {
+        project.version.release = true
+        ant.propertyfile(file: destFile) {
+            entry( key: "release", value: "true")
+        }
+    }
+
 }
 
