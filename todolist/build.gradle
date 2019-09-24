@@ -111,7 +111,12 @@ ProjectVersion readVersion() {
 
 
 task makeReleaseVersion(group: 'versioning', description: 'Makes project a release version.') {
-    doFirst {
+    // Declarinf versionrelease property as input
+    inputs.property('release', version.release)
+
+    //As the version file is going to be modified it's declared as output file property
+    outputs.file versionFile
+    doLast {
         version.release = true
         ant.propertyfile(file: versionFile) {
             entry( key: "release", value: "true")
