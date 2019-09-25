@@ -1,4 +1,5 @@
-import org.omg.CORBA.INTERNAL
+import com.eara.gia.ProjectVersion
+import com.eara.gia.ReleaseVersionTask
 
 plugins {
     id 'io.freefair.lombok' version '4.1.0'
@@ -109,6 +110,7 @@ ProjectVersion readVersion() {
     new ProjectVersion(versionProps.major.toInteger(), versionProps.minor.toInteger(), versionProps.release.toBoolean())
 }
 
+// TASKS
 
 /**
  * Defining and enhanced task of type ReleaseVersionTask
@@ -119,8 +121,74 @@ task makeReleaseVersion(type: ReleaseVersionTask) {
     destFile = versionFile
 }
 
-// Class definitions
+/**
+ * Task to create a distribution
+ */
+task createDistribution(group: 'releasing', description: 'Creation of the distribution file', type: Zip, dependsOn: makeReleaseVersion) {
+    // Implicit reference to output of War task
+    from war.outputs.files
 
+    // Takes all source files and puts them into src directory of ZIP file
+    from(sourceSets*.allSource) {
+        into 'src'
+    }
+
+    // Add versione file to ZIP
+    from(rootDir) {
+        include versionFile.name
+    }
+}
+
+/**
+ * Task to zip the release distribution
+ */
+task backupReleaseDistirbution(group: 'releasing', description: 'Zipping the release distribution', type: Copy) {
+    // Implicit reference to output of createDistribution output
+    from createDistribution.outputs.files
+    into "$buildDir/backup"
+}
+
+/**
+ * Task to create the release
+ */
+task release (group: 'releasing', description: 'Releasing of the distribution',dependsOn: backupReleaseDistirbution) {
+    doLast {
+        logger.quiet 'Releasing the project'
+    }
+}
+
+/**
+ * Task rule to merging similar logic tasks
+ */
+tasks.addRule("Pattern: increment<Classifier>Version - Increments the project version classifier.") {
+    String taskName ->
+        if(taskName.startsWith('increment') && taskName.endsWith('Version')) {
+            task(taskName) {
+                doLast {
+                    String classifier = (taskName - 'increment' - 'Version').toLowerCase()
+                    String currentVersion = version.toString()
+
+                    switch(classifier) {
+                        case 'major': ++version.major
+                                      break
+                        case 'minor': ++version.minor
+                            break
+                        default: throw new GradleException("Invalid version type '$classifier. Allowed types: ['Major', 'Minor']")
+                    }
+
+                    String newVersion = version.toString()
+                    logger.info("Incrementing $classifier project version: $currentVersion -> $newVersion")
+
+                    ant.propertyfile(file: destFile) {
+                        entry( key: classifier,  type: 'int', operation: '+', value: 1)
+                    }
+                }
+            }
+        }
+}
+
+// CLASSES DEFINITION
+/**
 class ProjectVersion {
     Integer major
     Integer minor
@@ -143,21 +211,6 @@ class ProjectVersion {
     }
 }
 
-/**
- * This class extends Gradle's default task implementation
- * and express the logic from "makeReleaseVersion" task as
- * a custom task class.
- *
- * The <b>@Input</b> annotation is used to declare the input
- * property "release" and the <b>@OutputFile</b> annotation to
- * define the output file.
- * These annotations act as automatic documentation as well.
- *
- * The <b>@TaskAction</b> annotation declares the method to be
- * executed.
- *
- * @author Ernesto A. Rodriguez Acosta
- */
 class ReleaseVersionTask extends DefaultTask {
 
     // Declaring custom task's inputs/outputs through annotations
@@ -178,5 +231,5 @@ class ReleaseVersionTask extends DefaultTask {
         }
     }
 
-}
+}*/
 
