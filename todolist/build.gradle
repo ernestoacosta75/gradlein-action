@@ -9,6 +9,7 @@ plugins {
 
 apply plugin: 'java'
 apply plugin: 'war'
+//apply plugin: 'fr.jcgay.gradle-notifier'
 
 ext {
     javaxServletApiVersion = '2.5'
@@ -32,15 +33,15 @@ version = new ProjectVersion(0, 1)               // Identifies project's version
 
 sourceCompatibility = 1.8   // Sets Java version compilation compatibility to 1.8
 
-// Repositories
-repositories {
-    jcenter()
-    mavenCentral()  // Shortcut notation for configuring Maven Central 2 repository
-}
+
 
 configurations {
     // configuration that holds jars to include in the jar
     compile
+}
+
+repositories {
+    mavenCentral()
 }
 
 // In Gradle, dependencies are grouped by configurations. One of the configurations that th Java plugin introduces ins 'compile
