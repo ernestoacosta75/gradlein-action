@@ -1,5 +1,6 @@
 import com.eara.gia.ProjectVersion
 import com.eara.gia.ReleaseVersionTask
+import com.eara.gia.ReleaseVersionListener
 
 plugins {
     id 'io.freefair.lombok' version '4.1.0'
@@ -142,7 +143,7 @@ task createDistribution(group: 'releasing', description: 'Creation of the distri
 /**
  * Task to zip the release distribution
  */
-task backupReleaseDistirbution(group: 'releasing', description: 'Zipping the release distribution', type: Copy) {
+task backupReleaseDistribution(group: 'releasing', description: 'Zipping the release distribution', type: Copy) {
     // Implicit reference to output of createDistribution output
     from createDistribution.outputs.files
     into "$buildDir/backup"
@@ -151,7 +152,7 @@ task backupReleaseDistirbution(group: 'releasing', description: 'Zipping the rel
 /**
  * Task to create the release
  */
-task release (group: 'releasing', description: 'Releasing of the distribution',dependsOn: backupReleaseDistirbution) {
+task release (group: 'releasing', description: 'Releasing of the distribution',dependsOn: backupReleaseDistribution) {
     doLast {
         logger.quiet 'Releasing the project'
     }
@@ -187,6 +188,7 @@ tasks.addRule("Pattern: increment<Classifier>Version - Increments the project ve
         }
 }
 
+/**
 gradle.taskGraph.whenReady { TaskExecutionGraph taskGraph ->
     if(taskGraph.hasTask(release)) {
         if(!version.release){
@@ -196,5 +198,11 @@ gradle.taskGraph.whenReady { TaskExecutionGraph taskGraph ->
             }
         }
     }
-}
+}*/
+
+// LISTENERS
+def releaseVersionListener = new ReleaseVersionListener()
+
+// Registers listener to task execution graph
+gradle.taskGraph.addTaskExecutionGraphListener(releaseVersionListener)
 
