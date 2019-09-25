@@ -114,17 +114,17 @@ ProjectVersion readVersion() {
 
 /**
  * Defining and enhanced task of type ReleaseVersionTask
- */
+
 task makeReleaseVersion(type: ReleaseVersionTask) {
     // Setting custom task properties
     release = version.release
     destFile = versionFile
-}
+} */
 
 /**
  * Task to create a distribution
  */
-task createDistribution(group: 'releasing', description: 'Creation of the distribution file', type: Zip, dependsOn: makeReleaseVersion) {
+task createDistribution(group: 'releasing', description: 'Creation of the distribution file', type: Zip) {
     // Implicit reference to output of War task
     from war.outputs.files
 
@@ -187,49 +187,14 @@ tasks.addRule("Pattern: increment<Classifier>Version - Increments the project ve
         }
 }
 
-// CLASSES DEFINITION
-/**
-class ProjectVersion {
-    Integer major
-    Integer minor
-    Boolean release
-
-    ProjectVersion(Integer major, Integer minor) {
-        this.major = major
-        this.minor = minor
-        this.release = Boolean.FALSE
-    }
-
-    ProjectVersion(Integer major, Integer minor, Boolean release) {
-        this(major, minor)
-        this.release = release
-    }
-
-    @Override
-    String toString() {
-        "$major.$minor${release ? '' : '-SNAPSHOT'}" //-SNAPSHOT suffix is only added if release property is false
-    }
-}
-
-class ReleaseVersionTask extends DefaultTask {
-
-    // Declaring custom task's inputs/outputs through annotations
-    @Input Boolean release
-    @OutputFile File destFile
-
-    ReleaseVersionTask() {
-        // Setting task's group and description properties in the constructor
-        group = 'versioning'
-        description = 'Makes project a release version.'
-    }
-
-    @TaskAction
-    void start() {
-        project.version.release = true
-        ant.propertyfile(file: destFile) {
-            entry( key: "release", value: "true")
+gradle.taskGraph.whenReady { TaskExecutionGraph taskGraph ->
+    if(taskGraph.hasTask(release)) {
+        if(!version.release){
+            version.release = true
+            ant.propertyfile(file: destFile) {
+                entry( key: "release", value: "true")
+            }
         }
     }
-
-}*/
+}
 
