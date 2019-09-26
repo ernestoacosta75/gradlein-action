@@ -2,54 +2,10 @@ import com.eara.gia.ProjectVersion
 import com.eara.gia.ReleaseVersionTask
 import com.eara.gia.ReleaseVersionListener
 
+// PLUGINS
 plugins {
     id 'io.freefair.lombok' version '4.1.0'
     id "org.akhikhl.gretty" version "1.2.4"
-}
-
-apply plugin: 'java'
-apply plugin: 'war'
-//apply plugin: 'fr.jcgay.gradle-notifier'
-
-ext {
-    javaxServletApiVersion = '2.5'
-    javaxServletJstlVersion = '1.1.2'
-    jUnitVersion = '4.12'
-    commonsLangVersion = '3.4'
-    versionFile = file('version.properties')    // File method is provided by Project interfafe;
-                                                // it creates an instance of java.io.File relative
-                                                // to project directory
-}
-
-webAppDirName = 'webfiles'
-
-war {
-    from 'static'
-}
-
-// Grade attributes
-group 'com.eara.gia'
-version = new ProjectVersion(0, 1)               // Identifies project's version through a number scheme
-
-sourceCompatibility = 1.8   // Sets Java version compilation compatibility to 1.8
-
-
-
-configurations {
-    // configuration that holds jars to include in the jar
-    compile
-}
-
-repositories {
-    mavenCentral()
-}
-
-// In Gradle, dependencies are grouped by configurations. One of the configurations that th Java plugin introduces ins 'compile
-dependencies {
-    providedCompile "javax.servlet:servlet-api:${javaxServletApiVersion}"
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
-    runtime 'javax.servlet:jstl:1.1.2'
-    testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
 // Customizing the Gretty plugin
@@ -62,6 +18,66 @@ gretty {
     contextPath = 'todo'
 
 }
+
+apply plugin: 'java'
+apply plugin: 'war'
+
+webAppDirName = 'webfiles'
+
+war {
+    from 'static'
+}
+
+// GRADLE ATTRIBUTES
+group 'com.eara.gia'
+version = new ProjectVersion(0, 1)  // Identifies project's version through a number scheme
+sourceCompatibility = 1.8           // Sets Java version compilation compatibility to 1.8
+
+// CONFIGURATIONS
+configurations {
+    // configuration that holds jars to include in the jar
+    compile
+
+    // Defines new configuration by name
+    cargo {
+        // Sets descriptions and visibility of configuration
+        description = 'Classpath for Cargo Ant tasks.'
+        visible = false
+    }
+}
+
+// REPOSITORIES
+repositories {
+    mavenCentral()
+}
+
+// DEPENDENCIES
+ext {
+    javaxServletApiVersion = '2.5'
+    javaxServletJstlVersion = '1.1.2'
+    jUnitVersion = '4.12'
+    commonsLangVersion = '3.4'
+    versionFile = file('version.properties')    // File method is provided by Project interface it creates an instance of java.io.File relative to project directory
+
+    cargoGroup = 'org.codehaus.cargo'
+    ext.cargoVersion = '1.3.1'
+}
+
+// In Gradle, dependencies are grouped by configurations. One of the configurations that th Java plugin introduces ins 'compile
+dependencies {
+    providedCompile "javax.servlet:servlet-api:$javaxServletApiVersion"
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: "$commonsLangVersion"
+    runtime "javax.servlet:jstl:$javaxServletJstlVersion"
+    testCompile group: 'junit', name: 'junit', version: "$jUnitVersion"
+
+    //Dependency declaration using map, containing group, name, and version attributes
+    cargo group: cargoGroup, name: 'cargo-core-uberjar', version: cargoVersion
+
+    // Shortcut dependency declaration as a string
+    cargo "$cargoGroup:cargo-ant:$cargoVersion"
+}
+
+
 
 // ----------- TASKS -----------
 
@@ -210,14 +226,4 @@ def releaseVersionListener = new ReleaseVersionListener()
 // Registers listener to task execution graph
 gradle.taskGraph.addTaskExecutionGraphListener(releaseVersionListener)
 
-
-// CONFIGURATIONS
-configurations {
-    // Defines new configuration by name
-    cargo {
-        // Sets descriptions and visibility of configuration
-        description = 'Classpath for Cargo Ant tasks.'
-        visible = false
-    }
-}
 
