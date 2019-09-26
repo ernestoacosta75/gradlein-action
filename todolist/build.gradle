@@ -207,3 +207,14 @@ def releaseVersionListener = new ReleaseVersionListener()
 // Registers listener to task execution graph
 gradle.taskGraph.addTaskExecutionGraphListener(releaseVersionListener)
 
+
+// CONFIGURATIONS
+configurations {
+    // Defines new configuration by name
+    cargo {
+        // Sets descriptions and visibilty of configuration
+        description = 'Classpath for Cargo Ant tasks.'
+        visible = false
+    }
+}
+
