@@ -64,6 +64,7 @@ gretty {
 }
 
 // ----------- TASKS -----------
+
 // Setting up the wrapper
 task wrapperSettings(type: Wrapper) {
     gradleVersion = '5.6.2'
@@ -111,17 +112,6 @@ ProjectVersion readVersion() {
     // In Groovy you can omit the return keyword if it's last statement in method
     new ProjectVersion(versionProps.major.toInteger(), versionProps.minor.toInteger(), versionProps.release.toBoolean())
 }
-
-// TASKS
-
-/**
- * Defining and enhanced task of type ReleaseVersionTask
-
-task makeReleaseVersion(type: ReleaseVersionTask) {
-    // Setting custom task properties
-    release = version.release
-    destFile = versionFile
-} */
 
 /**
  * Task to create a distribution
@@ -190,16 +180,29 @@ tasks.addRule("Pattern: increment<Classifier>Version - Increments the project ve
 }
 
 /**
-gradle.taskGraph.whenReady { TaskExecutionGraph taskGraph ->
-    if(taskGraph.hasTask(release)) {
-        if(!version.release){
-            version.release = true
-            ant.propertyfile(file: destFile) {
-                entry( key: "release", value: "true")
+ * Task to access the cargo configuration by name
+ */
+task deployToLocalTomcat {
+    doLast {
+        // Gets all dependencies for cargo configuration as file tree
+        FileTree cargoDeps = configurations.getByName('cargo').asFileTree
+
+        // Uses concatenated path of fully qualified dependencies to resolve
+        // Cargo Ant task definitions
+        ant.taskdef(resource: 'cargo.tasks', classpath: 'cargoDeps.asPath')
+
+        // Uses Cargo Ant task to automatically download a Tomcat 7 distribution,
+        // deploy a WAR File, and run it in container
+        ant.cargo(containerId: 'tomcat7x', action: 'run', output: "$buildDir/output.log") {
+            configuration {
+                deployable(type: 'war', file: 'todolist.war')
             }
+
+            zipUrlInstaller(installUrl: 'http://archive.apache.org/dist/ tomcat/tomcat-7/v7.0.32/bin/ apache-tomcat-7.0.32.zip')
         }
     }
-}*/
+}
+
 
 // LISTENERS
 def releaseVersionListener = new ReleaseVersionListener()
@@ -212,7 +215,7 @@ gradle.taskGraph.addTaskExecutionGraphListener(releaseVersionListener)
 configurations {
     // Defines new configuration by name
     cargo {
-        // Sets descriptions and visibilty of configuration
+        // Sets descriptions and visibility of configuration
         description = 'Classpath for Cargo Ant tasks.'
         visible = false
     }
