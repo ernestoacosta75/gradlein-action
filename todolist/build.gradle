@@ -75,7 +75,7 @@ dependencies {
 
     cargo group: cargoGroup, name: 'cargo-core-uberjar', version: cargoVersion
     cargo ("$cargoGroup:cargo-ant:$cargoVersion") {
-        exclude group: 'xml-apis', module: 'xml-apis'
+        transitive = false
     }
     cargo 'xml-apis:xml-apis:2.0.2'
 }
