@@ -1,4 +1,4 @@
-package com.eara.gia.todo.repositories;
+package com.eara.gia.todo.repository;
 
 import com.eara.gia.todo.model.ToDoItem;
 
