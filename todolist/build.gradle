@@ -61,6 +61,7 @@ ext {
 
     cargoGroup = 'org.codehaus.cargo'
     cargoVersion = '1.4.5'
+    dynamicCargoVersion = '1.+'
 
     tomcatDownloadUrl = 'http://.../apache-tomcat-7.0.50.zip'
     cargoHome = "$buildDir/cargo"
@@ -74,7 +75,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: "$jUnitVersion"
 
     cargo group: cargoGroup, name: 'cargo-core-uberjar', version: cargoVersion
-    cargo ("$cargoGroup:cargo-ant:$cargoVersion") {
+    cargo ("$cargoGroup:cargo-ant:$dynamicCargoVersion") {
         transitive = false
     }
     cargo 'xml-apis:xml-apis:2.0.2'
