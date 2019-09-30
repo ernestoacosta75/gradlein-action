@@ -49,6 +49,11 @@ configurations {
 // REPOSITORIES
 repositories {
     mavenCentral()
+    // Declaring a custom Maven repository
+    maven {
+        name 'Custom Maven Repository'
+        url 'http://repository-gradle-in-action.forge.cloudbees.com/release/'
+    }
 }
 
 // DEPENDENCIES
@@ -75,7 +80,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: "$jUnitVersion"
 
     cargo group: cargoGroup, name: 'cargo-core-uberjar', version: cargoVersion
-    cargo ("$cargoGroup:cargo-ant:$dynamicCargoVersion") {
+    cargo ("$cargoGroup:cargo-ant:$cargoVersion") {
         transitive = false
     }
     cargo 'xml-apis:xml-apis:2.0.2'
