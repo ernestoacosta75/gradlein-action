@@ -43,6 +43,9 @@ configurations {
     cargo {
         description = 'Classpath for Cargo Ant tasks.'
         visible = false
+        resolutionStrategy {
+            force 'org.codehaus.cargo:cargo-ant:1.3.0'
+        }
     }
 }
 
