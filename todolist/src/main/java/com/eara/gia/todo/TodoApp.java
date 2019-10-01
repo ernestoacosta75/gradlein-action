@@ -1,8 +1,7 @@
 package com.eara.gia.todo;
 
-import com.eara.gia.todo.utils.CommandLineInput;
 import com.eara.gia.todo.utils.CommandLineInputHandler;
-import org.apache.commons.lang3.CharUtils;
+
 
 /**
  * This class prints the application's options on the console,
@@ -18,7 +17,7 @@ public class TodoApp {
     public static void main(String[] args) {
         CommandLineInputHandler commandLineInputHandler = new CommandLineInputHandler();
         char command = DEFAULT_INPUT;
-
+/**
         // Application runs as long as user enters exit command
         while(CommandLineInput.EXIT.getShortCmd() != command) {
             commandLineInputHandler.printOptions();
@@ -34,5 +33,6 @@ public class TodoApp {
             // Executes CRUD command
             commandLineInputHandler.processInput(commandLineInput);
         }
+ */
     }
 }

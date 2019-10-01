@@ -7,7 +7,9 @@ allprojects {
     }
 
     dependencies {
-        compile 'org.projectlombok:lombok:1.12.2'
+        compileOnly 'org.projectlombok:lombok:1.16.16'
+        annotationProcessor 'org.projectlombok:lombok:1.18.2'
+        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
     }
 }
 
@@ -21,18 +23,21 @@ version = projectIds.version
 
 // Configures each subproject by project patrh; actual configuration happens
 // in the closure
-project('model') {
-    group = projectIds.group
-    version = projectIds.version
-    apply plugin: 'java'
-}
-
-project('repository') {
+project(':model') {
     group = projectIds.group
     version = projectIds.version
 }
 
-project('web') {
+project(':repository') {
+    group = projectIds.group
+    version = projectIds.version
+
+    dependencies {
+        compile project(':model')   // Declares compile-time dependency on project with path :model
+    }
+}
+
+project(':web') {
     group = projectIds.group
     version = projectIds.version
 
@@ -40,6 +45,7 @@ project('web') {
     apply from: 'https://raw.github.com/akhikhl/gretty/master/pluginScripts/gretty.plugin'
 
     dependencies {
+        compile project(':repository')  // Declares compile-time dependency on project with path :repository
         providedCompile 'javax.servlet:servlet-api:2.5'
         runtime 'javax.servlet:jstl:1.2'
     }

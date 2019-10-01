@@ -1,15 +1,10 @@
 package com.eara.gia.todo.utils;
 
-import com.eara.gia.todo.model.ToDoItem;
-import com.eara.gia.todo.repositories.TodoRepository;
-import com.eara.gia.todo.repositories.impl.TodoRepositoryInMemoryImpl;
 import lombok.Data;
-
-import java.util.Collection;
 
 @Data
 public class CommandLineInputHandler {
-
+/**
     private TodoRepository toDoRepository = new TodoRepositoryInMemoryImpl();
 
     public void printOptions() {
@@ -136,5 +131,5 @@ public class CommandLineInputHandler {
     private void handleUnknownInput() {
         System.out.println("Please select a valid option!");
     }
-
+*/
 }

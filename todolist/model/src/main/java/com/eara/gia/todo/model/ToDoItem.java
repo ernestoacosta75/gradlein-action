@@ -1,5 +1,6 @@
 package com.eara.gia.todo.model;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,9 +10,10 @@ import lombok.NoArgsConstructor;
  * to-do list.
  *
  * @author Ernesto A. Rodriguez Acosta
+ *
  */
 @Data
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Builder
 public class ToDoItem implements Comparable<ToDoItem> {
 

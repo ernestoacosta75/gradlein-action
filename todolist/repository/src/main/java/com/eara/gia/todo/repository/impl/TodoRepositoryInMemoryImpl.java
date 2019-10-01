@@ -1,7 +1,7 @@
 package com.eara.gia.todo.repository.impl;
 
 import com.eara.gia.todo.model.ToDoItem;
-import com.eara.gia.todo.repositories.TodoRepository;
+import com.eara.gia.todo.repository.TodoRepository;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,8 +1,8 @@
 package com.eara.todo.web;
 
 import com.eara.gia.todo.model.ToDoItem;
-import com.eara.gia.todo.repositories.TodoRepository;
-import com.eara.gia.todo.repositories.impl.TodoRepositoryInMemoryImpl;
+import com.eara.gia.todo.repository.TodoRepository;
+import com.eara.gia.todo.repository.impl.TodoRepositoryInMemoryImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
