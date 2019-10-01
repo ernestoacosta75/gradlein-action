@@ -1,3 +1,60 @@
+allprojects {
+    apply plugin: 'java'
+
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+        compile 'org.projectlombok:lombok:1.12.2'
+    }
+}
+
+// Declaration of extra property projectIds as a map that holds the
+// key-value pairs for group and version; property can be used in subprojects
+
+ext.projectIds = ['group': 'com.eara.gia', 'version': '0.1']
+
+group = projectIds.group
+version = projectIds.version
+
+// Configures each subproject by project patrh; actual configuration happens
+// in the closure
+project('model') {
+    group = projectIds.group
+    version = projectIds.version
+    apply plugin: 'java'
+}
+
+project('repository') {
+    group = projectIds.group
+    version = projectIds.version
+}
+
+project('web') {
+    group = projectIds.group
+    version = projectIds.version
+
+    apply plugin: 'war'
+    apply from: 'https://raw.github.com/akhikhl/gretty/master/pluginScripts/gretty.plugin'
+
+    dependencies {
+        providedCompile 'javax.servlet:servlet-api:2.5'
+        runtime 'javax.servlet:jstl:1.2'
+    }
+
+    gretty {
+        httpPort = 9090
+        scanInterval = 1    //Scan for changes every second
+        host = '0.0.0.0'    // Enable network access from outside your local machine
+        managedClassReload = true   // Activate spring-loaded class realoading
+        consoleLogEnabled = true
+    }
+}
+
+
+/**
 import com.eara.gia.ProjectVersion
 import com.eara.gia.ReleaseVersionTask
 import com.eara.gia.ReleaseVersionListener
@@ -96,12 +153,12 @@ task wrapperSettings(type: Wrapper) {
     gradleVersion = '5.6.2'
 }
 
-/**
- * "group" and "description" properties act as part of the task documentation.
- *
- * The "description" property represents a short definition of the task's purpose.
- * The "group" property defines a logic grouping of tasks.
- */
+
+//"group" and "description" properties act as part of the task documentation.
+//
+// The "description" property represents a short definition of the task's purpose.
+//The "group" property defines a logic grouping of tasks.
+
 task printVersion(group: 'versioning', description: 'Prints project version.') {
     // Initial declaration of a task can contain a first and last action
     doFirst {
@@ -139,9 +196,9 @@ ProjectVersion readVersion() {
     new ProjectVersion(versionProps.major.toInteger(), versionProps.minor.toInteger(), versionProps.release.toBoolean())
 }
 
-/**
- * Task to create a distribution
- */
+
+//Task to create a distribution
+
 task createDistribution(group: 'releasing', description: 'Creation of the distribution file', type: Zip) {
     // Implicit reference to output of War task
     from war.outputs.files
@@ -157,27 +214,27 @@ task createDistribution(group: 'releasing', description: 'Creation of the distri
     }
 }
 
-/**
- * Task to zip the release distribution
- */
+
+//Task to zip the release distribution
+
 task backupReleaseDistribution(group: 'releasing', description: 'Zipping the release distribution', type: Copy) {
     // Implicit reference to output of createDistribution output
     from createDistribution.outputs.files
     into "$buildDir/backup"
 }
 
-/**
- * Task to create the release
- */
+
+//Task to create the release
+
 task release (group: 'releasing', description: 'Releasing of the distribution',dependsOn: backupReleaseDistribution) {
     doLast {
         logger.quiet 'Releasing the project'
     }
 }
 
-/**
- * Task rule to merging similar logic tasks
- */
+
+//Task rule to merging similar logic tasks
+
 tasks.addRule("Pattern: increment<Classifier>Version - Increments the project version classifier.") {
     String taskName ->
         if(taskName.startsWith('increment') && taskName.endsWith('Version')) {
@@ -205,9 +262,9 @@ tasks.addRule("Pattern: increment<Classifier>Version - Increments the project ve
         }
 }
 
-/**
- * Deploying the war to Tomcat
- */
+
+// Deploying the war to Tomcat
+
 task deployToLocalTomcat {
     doLast {
         FileTree cargoDeps = configurations.getByName('cargo').asFileTree
@@ -223,9 +280,9 @@ task deployToLocalTomcat {
     }
 }
 
-/**
- * Copying the Cargo dependencies to the local file system
- */
+
+// Copying the Cargo dependencies to the local file system
+
 task copyDependenciesToLocalDir(type: Copy) {
     // Syntactic sugar provided by Gradle API; same as calling configurations.getByName('cargo').asFileTree
     from configurations.cargo.asFileTree
@@ -237,6 +294,6 @@ task copyDependenciesToLocalDir(type: Copy) {
 def releaseVersionListener = new ReleaseVersionListener()
 
 // Registers listener to task execution graph
-gradle.taskGraph.addTaskExecutionGraphListener(releaseVersionListener)
+gradle.taskGraph.addTaskExecutionGraphListener(releaseVersionListener)*/
 
 
