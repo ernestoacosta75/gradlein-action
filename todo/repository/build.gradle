@@ -1,3 +1,5 @@
 dependencies {
     compile project(':model')   // Declares compile-time dependency on project with path :model
 }
+
+test.useTestNG()    // Enables TestNG support for the project
