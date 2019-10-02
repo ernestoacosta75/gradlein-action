@@ -1,15 +1,16 @@
-plugins {
-    id 'java'
-}
-
-group 'com.eara.gia'
-
-sourceCompatibility = 1.8
-
-repositories {
-    mavenCentral()
-}
+apply plugin: 'war'
+apply from: 'https://raw.github.com/akhikhl/gretty/master/pluginScripts/gretty.plugin'
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile project(':repository')  // Declares compile-time dependency on project with path :repository
+    providedCompile 'javax.servlet:servlet-api:2.5'
+    runtime 'javax.servlet:jstl:1.2'
+}
+
+gretty {
+    httpPort = 9090
+    scanInterval = 1    //Scan for changes every second
+    host = '0.0.0.0'    // Enable network access from outside your local machine
+    managedClassReload = true   // Activate spring-loaded class realoading
+    consoleLogEnabled = true
 }

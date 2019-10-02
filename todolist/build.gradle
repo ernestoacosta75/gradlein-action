@@ -37,10 +37,6 @@ project(':model') {
 }
 
 project(':repository') {
-    dependencies {
-        compile project(':model')   // Declares compile-time dependency on project with path :model
-    }
-
     task hello() {
         doLast{
             println 'Hello from repository project'
@@ -49,22 +45,7 @@ project(':repository') {
 }
 
 project(':web') {
-    apply plugin: 'war'
-    apply from: 'https://raw.github.com/akhikhl/gretty/master/pluginScripts/gretty.plugin'
 
-    dependencies {
-        compile project(':repository')  // Declares compile-time dependency on project with path :repository
-        providedCompile 'javax.servlet:servlet-api:2.5'
-        runtime 'javax.servlet:jstl:1.2'
-    }
-
-    gretty {
-        httpPort = 9090
-        scanInterval = 1    //Scan for changes every second
-        host = '0.0.0.0'    // Enable network access from outside your local machine
-        managedClassReload = true   // Activate spring-loaded class realoading
-        consoleLogEnabled = true
-    }
 }
 
 
