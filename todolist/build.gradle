@@ -1,10 +1,15 @@
 allprojects {
-    apply plugin: 'java'
+    group = 'com.eara.gia'
+    version = '0.1'
 
     repositories {
         jcenter()
         mavenCentral()
     }
+}
+
+subprojects {
+    apply plugin: 'java'
 
     dependencies {
         compileOnly 'org.projectlombok:lombok:1.16.16'
@@ -13,14 +18,6 @@ allprojects {
     }
 }
 
-// Declaration of extra property projectIds as a map that holds the
-// key-value pairs for group and version; property can be used in subprojects
-
-ext.projectIds = ['group': 'com.eara.gia', 'version': '0.1']
-
-group = projectIds.group
-version = projectIds.version
-
 // GLOBAL TASKS
 task hello {
     doLast{
@@ -28,13 +25,9 @@ task hello {
     }
 }
 
-
 // Configures each subproject by project patrh; actual configuration happens
 // in the closure
 project(':model') {
-    group = projectIds.group
-    version = projectIds.version
-
     // Declares a task dependency on task from subproject repository
     task hello(dependsOn: ':repository:hello') {
         doLast{
@@ -44,9 +37,6 @@ project(':model') {
 }
 
 project(':repository') {
-    group = projectIds.group
-    version = projectIds.version
-
     dependencies {
         compile project(':model')   // Declares compile-time dependency on project with path :model
     }
@@ -59,9 +49,6 @@ project(':repository') {
 }
 
 project(':web') {
-    group = projectIds.group
-    version = projectIds.version
-
     apply plugin: 'war'
     apply from: 'https://raw.github.com/akhikhl/gretty/master/pluginScripts/gretty.plugin'
 
