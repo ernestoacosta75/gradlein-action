@@ -21,11 +21,26 @@ ext.projectIds = ['group': 'com.eara.gia', 'version': '0.1']
 group = projectIds.group
 version = projectIds.version
 
+// GLOBAL TASKS
+task hello {
+    doLast{
+        println 'Hello from root project'
+    }
+}
+
+
 // Configures each subproject by project patrh; actual configuration happens
 // in the closure
 project(':model') {
     group = projectIds.group
     version = projectIds.version
+
+    // Declares a task dependency on task from subproject repository
+    task hello(dependsOn: ':repository:hello') {
+        doLast{
+            println 'Hello from model project'
+        }
+    }
 }
 
 project(':repository') {
@@ -34,6 +49,12 @@ project(':repository') {
 
     dependencies {
         compile project(':model')   // Declares compile-time dependency on project with path :model
+    }
+
+    task hello() {
+        doLast{
+            println 'Hello from repository project'
+        }
     }
 }
 
